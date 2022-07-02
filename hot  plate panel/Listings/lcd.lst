@@ -1,0 +1,98 @@
+C51 COMPILER V9.60.0.0   LCD                                                               06/22/2022 21:14:51 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE LCD
+OBJECT MODULE PLACED IN .\Objects\lcd.obj
+COMPILER INVOKED BY: D:\Keil_v5\C51\BIN\C51.EXE user\lcd.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\
+                    -lcd.lst) TABS(2) OBJECT(.\Objects\lcd.obj)
+
+line level    source
+
+   1          #include"wk.h"
+   2          
+   3          void lcd_init(void)
+   4          {
+   5   1          lcd_w_cmd(0x3c);
+   6   1          lcd_w_cmd(0x0c);
+   7   1          lcd_w_cmd(0x01);
+   8   1          lcd_w_cmd(0x06);
+   9   1      }
+  10          uchar lcd_Read_state(void)
+  11          {
+  12   1          uchar s;
+  13   1          RW=1;
+  14   1          delay(200);
+  15   1          RS=0;
+  16   1          delay(200);
+  17   1          E=1;
+  18   1          delay(200);
+  19   1          s=LCD_DB;
+  20   1          delay(200);
+  21   1          E=0;
+  22   1          delay(200);
+  23   1          RW=0;
+  24   1          delay(200);
+  25   1          return(s);
+  26   1      }
+  27          void lcd_w_cmd(uchar com)
+  28          {
+  29   1          uchar i;
+  30   1          do
+  31   1          {
+  32   2              i=lcd_Read_state();
+  33   2              i=i&0x80;
+  34   2              delay(200);
+  35   2          }
+  36   1          while (i!=0);
+  37   1          RW=0;
+  38   1          delay(200);
+  39   1          RS=0;
+  40   1          delay(200);
+  41   1          E=1;
+  42   1          delay(200);
+  43   1          LCD_DB=com;
+  44   1          delay(200);
+  45   1          E=0;
+  46   1          delay(200);
+  47   1          RW=1;
+  48   1          delay(200);
+  49   1      }
+  50          void lcd_w_data(uchar data_)
+  51          {
+  52   1          uchar i;
+  53   1          do
+  54   1          {
+C51 COMPILER V9.60.0.0   LCD                                                               06/22/2022 21:14:51 PAGE 2   
+
+  55   2              i=lcd_Read_state();
+  56   2              i=i&0x80;
+  57   2              delay(200);
+  58   2          }
+  59   1          while (i!=0);
+  60   1          RW=0;
+  61   1          delay(200);
+  62   1          RS=1;
+  63   1          delay(200);
+  64   1          E=1;
+  65   1          delay(200);
+  66   1          LCD_DB=data_;
+  67   1          delay(200);
+  68   1          E=0;
+  69   1          delay(200);
+  70   1          RW=1;
+  71   1          delay(200);
+  72   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    228    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       5
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

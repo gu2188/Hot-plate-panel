@@ -1,0 +1,69 @@
+C51 COMPILER V9.60.0.0   MAIN                                                              06/22/2022 21:14:51 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: D:\Keil_v5\C51\BIN\C51.EXE user\main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings
+                    -\main.lst) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include"wk.h"
+   2          
+   3          void variable_init(void)
+   4          {
+   5   1          //IO_init
+   6   1          P3M1|=0X00;
+   7   1          P3M0|=0x10;
+   8   1          P1M1=0X03;
+   9   1          P1M0=0X00;
+  10   1          //variable_init
+  11   1          res_voltage_data=0;
+  12   1          res_voltage_data_power=0;
+  13   1          thermistor_voltage_data=0;
+  14   1          thermistor_voltage_data_power=0;
+  15   1          working_condition=2;//!!This line because the schematic design flaws, the use of _code changes. normal
+             -:working_condition=0;
+  16   1          adjustment_range=2;
+  17   1          adjustment_range_data[0]=1;
+  18   1          adjustment_range_data[1]=5;
+  19   1          adjustment_range_data[2]=10;
+  20   1          adjustment_range_data[3]=100;
+  21   1          design_temperature=200;
+  22   1          //IO_init
+  23   1          key3=0;
+  24   1          key4=0;
+  25   1          //mos control
+  26   1          MOS_control=0;
+  27   1      }
+  28          
+  29          int main()
+  30          {
+  31   1          variable_init();
+  32   1          lcd_init();
+  33   1          Always_interrupt_init();
+  34   1          timer0_init();
+  35   1          timer1_init();
+  36   1          ADC_initialize();
+  37   1          while(1)
+  38   1          {
+  39   2              Job_control();
+  40   2              According_lcd();
+  41   2          }
+  42   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    101    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+C51 COMPILER V9.60.0.0   MAIN                                                              06/22/2022 21:14:51 PAGE 2   
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

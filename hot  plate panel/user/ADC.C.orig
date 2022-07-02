@@ -1,0 +1,61 @@
+#include"wk.h"
+
+unsigned int res_voltage_data;
+double res_voltage_data_power;
+unsigned int thermistor_voltage_data;
+double thermistor_voltage_data_power;
+void ADC_initialize(void)
+{
+    P1ASF=0X03;
+    ADC_RES=0;
+		ADC_RESL=0;
+    ADC_CONTR=0X80;
+    delay(1200);
+}
+void adc_res_voltage(void)
+{
+    ADC_RES=0;
+		ADC_RESL=0;
+    ADC_CONTR=0X80;//000=0,001=1,010=2,011=3,100=4,101=5,110=6,111=7
+    delay(1200);
+    ADC_CONTR=0X88;
+    while(!(ADC_CONTR&0x10));
+    ADC_CONTR=0x00;
+}
+
+void adc_res_voltage_data(void)
+{
+	double a=0;
+	res_voltage_data=0;
+	res_voltage_data=ADC_RES;
+	res_voltage_data<<=2;
+	res_voltage_data|=ADC_RESL;
+	a=res_voltage_data*(5.0000/1024.0000);
+	//NTC 10K,10K
+//	res_voltage_data_power=(10000.0000*a)/(5.0000-a);
+
+	res_voltage_data_power=(12.0000-a/31.0000-(a/31.0000/0.005)*0.007)*(a/31.0000/0.005);
+
+}
+
+void adc_thermistor_voltage(void)
+{
+    ADC_RES=0;
+		ADC_RESL=0;
+    ADC_CONTR=0X81;//000=0,001=1,010=2,011=3,100=4,101=5,110=6,111=7
+    delay(1200);
+    ADC_CONTR=0X89;
+    while(!(ADC_CONTR&0x10));
+    ADC_CONTR=0x00;
+}
+
+void adc_thermistor_voltage_data(void)
+{
+	double a=0;
+	thermistor_voltage_data=0;
+	thermistor_voltage_data=ADC_RES;
+	thermistor_voltage_data<<=2;
+	thermistor_voltage_data|=ADC_RESL;
+	a=thermistor_voltage_data*(5.0000/1024.000);
+	thermistor_voltage_data_power=(1000.0000*a)/(5.0000-a);
+}

@@ -1,0 +1,10 @@
+".\Objects\ADC.obj",
+".\Objects\delay.obj",
+".\Objects\lcd.obj",
+".\Objects\main.obj",
+".\Objects\STARTUP.obj",
+".\Objects\interrupt.obj",
+".\Objects\According.obj",
+".\Objects\temptation.obj" 
+TO ".\Objects\1" 
+PRINT(".\Listings\1.m51")

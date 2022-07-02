@@ -1,0 +1,139 @@
+C51 COMPILER V9.60.0.0   INTERRUPT                                                         06/22/2022 21:14:51 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE INTERRUPT
+OBJECT MODULE PLACED IN .\Objects\interrupt.obj
+COMPILER INVOKED BY: D:\Keil_v5\C51\BIN\C51.EXE user\interrupt.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Lis
+                    -tings\interrupt.lst) TABS(2) OBJECT(.\Objects\interrupt.obj)
+
+line level    source
+
+   1          #include"wk.h"
+   2          
+   3          unsigned int working_condition;//close=0,open=1,keep=2,timer and keep =3
+   4          unsigned int adjustment_range;
+   5          unsigned int adjustment_range_data[4];//adjustment range 1~5~10~100
+   6          int design_temperature;
+   7          void Always_interrupt_init(void)
+   8          {
+   9   1          EA=1;
+  10   1          //External_interrupt
+  11   1          EX0=1;
+  12   1          EX1=1;
+  13   1          IT0=1;
+  14   1          IT1=1;
+  15   1          IE0=1;
+  16   1          IE1=1;
+  17   1          Ex_interrupt_0=0;//!!This line because the schematic design flaws, the use of _code changes.  normal:Ex
+             -_interrupt_0=1;
+  18   1          Ex_interrupt_1=0;//!!This line because the schematic design flaws, the use of _code changes.  normal:Ex
+             -_interrupt_1=1;
+  19   1          //timer_interrupt
+  20   1          ET0=1;
+  21   1          ET1=1;
+  22   1      
+  23   1      }
+  24          
+  25          void timer0_init(void) //50ms
+  26          {
+  27   1          TMOD|=0x01;
+  28   1          TL0=0x00;
+  29   1          TH0=0x4C;
+  30   1          TF0=0;
+  31   1          TR0=1;
+  32   1      }
+  33          
+  34          void timer1_init(void) //10ms
+  35          {
+  36   1          TMOD|=0x10;
+  37   1          TL1=0x00;
+  38   1          TH1=0xDC;
+  39   1          TF1=0;
+  40   1          TR1=0;
+  41   1      }
+  42          
+  43          void External_interrupt_0(void) interrupt 0
+  44          {
+  45   1          IE0=0;
+  46   1          working_condition++;
+  47   1          if(working_condition==4)
+  48   1              working_condition=0;
+  49   1      }
+  50          
+  51          void External_interrupt_1(void) interrupt 2
+  52          {
+C51 COMPILER V9.60.0.0   INTERRUPT                                                         06/22/2022 21:14:51 PAGE 2   
+
+  53   1          adjustment_range++;
+  54   1          if(adjustment_range==4)
+  55   1              adjustment_range=0;
+  56   1      }
+  57          
+  58          void timer0_interrupt(void) interrupt 1
+  59          {
+  60   1          TF0 = 0;
+  61   1          TL0=0x00;
+  62   1          TH0=0x4C;
+  63   1          if(key3==1)
+  64   1          {
+  65   2              design_temperature+=adjustment_range_data[adjustment_range];
+  66   2              if(design_temperature>250)
+  67   2                  design_temperature=250;
+  68   2              while(key3);
+  69   2          }
+  70   1          if(key4==1)
+  71   1          {
+  72   2              design_temperature-=adjustment_range_data[adjustment_range];
+  73   2              if(working_condition==3)
+  74   2              {
+  75   3                  if(design_temperature<1)
+  76   3                      design_temperature=1;
+  77   3              }
+  78   2              else
+  79   2              {
+  80   3                  if(design_temperature<40)
+  81   3                      design_temperature=40;
+  82   3              }
+  83   2              while(key4);
+  84   2          }
+  85   1      }
+  86          
+  87          void timer1_interrupt(void) interrupt 3
+  88          {
+  89   1          static int num=0;
+  90   1          TL1=0x00;
+  91   1          TH1=0xDC;
+  92   1          TF1=0;
+  93   1          num++;
+  94   1          if((num/6000)>=((volatile)design_temperature))
+  95   1              /*When design_temperature change,the program crashes and
+  96   1              variables change,so volative can restore the program to
+  97   1              normal
+  98   1              */
+  99   1          {
+ 100   2              num=0;
+ 101   2              TR1=0;
+ 102   2              working_condition=0;
+ 103   2          }
+ 104   1          if(working_condition!=3)
+ 105   1          {
+ 106   2              num=0;
+ 107   2              TR1=0;
+ 108   2          }
+ 109   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    360    ----
+   CONSTANT SIZE    =   ----    ----
+C51 COMPILER V9.60.0.0   INTERRUPT                                                         06/22/2022 21:14:51 PAGE 3   
+
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     16    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
